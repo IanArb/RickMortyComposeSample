@@ -1,6 +1,6 @@
 # Rick Morty Compose App
 
-An example usage of the new declarative UI component, Jetpack Compose. 
+An example usage of the new declarative UI component, Jetpack Compose. Still WIP (Work in Progress!)
 
 The sample app displays Rick & Morty content from (https://rickandmortyapi.com/). 
 

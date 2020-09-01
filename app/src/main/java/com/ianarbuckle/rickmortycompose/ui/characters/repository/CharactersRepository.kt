@@ -1,4 +1,4 @@
-package com.ianarbuckle.rickmortycompose.ui.characters
+package com.ianarbuckle.rickmortycompose.ui.characters.repository
 
 import com.ianarbuckle.rickmortycompose.api.Character
 import com.ianarbuckle.rickmortycompose.api.RickMortyService

@@ -1,20 +1,19 @@
-package com.ianarbuckle.rickmortycompose.ui.characters
+package com.ianarbuckle.rickmortycompose.ui.characters.viewmodel
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ianarbuckle.rickmortycompose.api.Character
+import com.ianarbuckle.rickmortycompose.ui.characters.usecase.CharactersUseCase
 import com.ianarbuckle.rickmortycompose.utils.CoroutineDispatchers
 import com.ianarbuckle.rickmortycompose.utils.Result
+import com.ianarbuckle.rickmortycompose.utils.UIViewState
 import com.ianarbuckle.rickmortycompose.utils.asLiveData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-@ExperimentalCoroutinesApi
 class CharactersViewModel @ViewModelInject constructor(private val useCase: CharactersUseCase,
                                                        private val dispatchers: CoroutineDispatchers) : ViewModel() {
 

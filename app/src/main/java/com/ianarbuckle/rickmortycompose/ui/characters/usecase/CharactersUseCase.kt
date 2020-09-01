@@ -1,6 +1,7 @@
-package com.ianarbuckle.rickmortycompose.ui.characters
+package com.ianarbuckle.rickmortycompose.ui.characters.usecase
 
 import com.ianarbuckle.rickmortycompose.api.Character
+import com.ianarbuckle.rickmortycompose.ui.characters.repository.CharactersRepository
 import com.ianarbuckle.rickmortycompose.utils.Result
 import javax.inject.Inject
 

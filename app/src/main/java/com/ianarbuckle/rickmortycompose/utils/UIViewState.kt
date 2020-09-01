@@ -1,6 +1,4 @@
-package com.ianarbuckle.rickmortycompose.ui.characters
-
-import com.ianarbuckle.rickmortycompose.api.Character
+package com.ianarbuckle.rickmortycompose.utils
 
 sealed class UIViewState<out T: Any> {
     data class Success<out T: Any>(val result: T): UIViewState<T>()

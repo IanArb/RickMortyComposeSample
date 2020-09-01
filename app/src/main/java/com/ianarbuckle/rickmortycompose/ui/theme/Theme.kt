@@ -1,4 +1,4 @@
-package com.ianarbuckle.rickmortycompose.ui
+package com.ianarbuckle.rickmortycompose.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.*

@@ -13,8 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.res.imageResource
@@ -67,9 +66,6 @@ fun CataloguesScreen(charactersViewModel: CharactersViewModel) {
                     LoadingContent()
                 }
             }
-        },
-        bottomBar = {
-            BottomAppBar(bottomBarSelectedIndex)
         }
     )
 }
@@ -81,7 +77,7 @@ fun LoadingContent() {
             .fillMaxHeight()
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
-        verticalGravity = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically
     ) {
         CircularProgressIndicator()
     }
@@ -94,9 +90,9 @@ fun ErrorContent() {
         .fillMaxWidth()
         .padding(16.dp),
         horizontalArrangement = Arrangement.Center,
-        verticalGravity = Alignment.CenterVertically) {
+        verticalAlignment = Alignment.CenterVertically) {
         Column(
-                horizontalGravity = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally
         ){
             Image(
                     imageResource(id = R.drawable.rick_morty_error),
@@ -128,7 +124,7 @@ fun BottomAppBar(bottomBarSelectedIndex: Int) {
             icon = { Icon(Icons.Default.Person) },
             label = { Text("Characters") },
             selected = selectedIndex == 0,
-            onSelect = {
+            onClick = {
                 selectedIndex = 0
             })
 
@@ -136,7 +132,7 @@ fun BottomAppBar(bottomBarSelectedIndex: Int) {
             icon = { Icon(Icons.Default.LocationOn) },
             label = { Text("Locations") },
             selected = selectedIndex == 1,
-            onSelect = {
+            onClick = {
                 selectedIndex = 0
             })
 

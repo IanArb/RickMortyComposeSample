@@ -19,10 +19,10 @@ import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
+import com.ianarbuckle.rickmortycompose.R
 import com.ianarbuckle.rickmortycompose.api.Character
 import com.ianarbuckle.rickmortycompose.api.Location
 import com.ianarbuckle.rickmortycompose.api.Origin
-import com.ianarbuckle.rickmortycompose.ui.theme.RickyMortyComposeTheme
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
@@ -52,6 +52,7 @@ fun CardLayout(character: Character) {
                 CoilImageWithCrossfade(
                     request = ImageRequest.Builder(ContextAmbient.current)
                         .data(character.image)
+                        .placeholder(R.drawable.transparent)
                         .transformations(CircleCropTransformation())
                         .build(),
                     modifier = Modifier.padding(16.dp),
@@ -128,7 +129,6 @@ fun statusColor(status: String): Color {
     return when(status) {
         "Alive" -> Color.Green
         "Dead" -> Color.Red
-        "unknown" -> Color.Black
         else -> Color.Black
     }
 }
@@ -178,7 +178,5 @@ fun DefaultPreview() {
         origin = Origin("", ""),
         id = 0
     )
-    RickyMortyComposeTheme {
-        CharactersContent(listOf(rick, morty, summer), InnerPadding(16.dp))
-    }
+    CharactersContent(listOf(rick, morty, summer), InnerPadding(16.dp))
 }

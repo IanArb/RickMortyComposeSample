@@ -41,8 +41,8 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion = "1.4.0"
-        kotlinCompilerExtensionVersion = "1.0.0-alpha01"
+        kotlinCompilerVersion = "1.4.10"
+        kotlinCompilerExtensionVersion = "1.0.0-alpha03"
     }
 }
 
@@ -58,16 +58,16 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.0")
     implementation("androidx.core:core-ktx:1.3.1")
     implementation("androidx.appcompat:appcompat:1.2.0")
-    implementation("com.google.android.material:material:1.2.0")
+    implementation("com.google.android.material:material:1.2.1")
     testImplementation("junit:junit:4.+")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
 
-    implementation("androidx.compose.ui:ui:1.0.0-alpha01")
-    implementation("androidx.compose.ui:ui-graphics:1.0.0-alpha01")
-    implementation("androidx.ui:ui-tooling:1.0.0-alpha01")
-    implementation("androidx.compose.foundation:foundation-layout:1.0.0-alpha01")
-    implementation("androidx.compose.material:material:1.0.0-alpha01")
-    implementation("androidx.compose.runtime:runtime-livedata:1.0.0-alpha01")
+    implementation("androidx.compose.ui:ui:1.0.0-alpha03")
+    implementation("androidx.compose.ui:ui-graphics:1.0.0-alpha03")
+    implementation("androidx.ui:ui-tooling:1.0.0-alpha03")
+    implementation("androidx.compose.foundation:foundation-layout:1.0.0-alpha03")
+    implementation("androidx.compose.material:material:1.0.0-alpha03")
+    implementation("androidx.compose.runtime:runtime-livedata:1.0.0-alpha03")
 
     implementation("com.google.dagger:hilt-android:2.28-alpha")
     kapt("com.google.dagger:hilt-android-compiler:2.28-alpha")
@@ -89,6 +89,6 @@ dependencies {
 
     implementation("androidx.activity:activity-ktx:1.1.0")
 
-    implementation("dev.chrisbanes.accompanist:accompanist-coil:0.2.0")
+    implementation("dev.chrisbanes.accompanist:accompanist-coil:0.2.1")
 
 }

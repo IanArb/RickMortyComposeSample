@@ -52,7 +52,6 @@ fun CardLayout(character: Character) {
                 CoilImageWithCrossfade(
                     request = ImageRequest.Builder(ContextAmbient.current)
                         .data(character.image)
-                        .placeholder(R.drawable.transparent)
                         .transformations(CircleCropTransformation())
                         .build(),
                     modifier = Modifier.padding(16.dp),

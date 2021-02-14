@@ -1,40 +1,29 @@
-package com.ianarbuckle.rickmortycompose.ui.characters.composables
+package com.ianarbuckle.rickmortycompose.ui.characters.view
 
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.ui.tooling.preview.Preview
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
-import com.ianarbuckle.rickmortycompose.R
 import com.ianarbuckle.rickmortycompose.api.Character
 import com.ianarbuckle.rickmortycompose.api.Location
 import com.ianarbuckle.rickmortycompose.api.Origin
-import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
-
-@Composable
-fun CharactersContent(characters: List<Character>, innerPadding: InnerPadding) {
-    LazyColumnFor(
-        contentPadding = innerPadding,
-        modifier = Modifier.padding(16.dp),
-        items = characters
-    ) { item ->
-        CardLayout(item)
-    }
-}
+import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
 fun CardLayout(character: Character) {
@@ -43,24 +32,21 @@ fun CardLayout(character: Character) {
             .padding(8.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(10.dp),
-        elevation = 6.dp
+        elevation = 4.dp
     ) {
         Row {
-            Box(
-                modifier = Modifier.gravity(Alignment.CenterVertically)
-            ) {
-                CoilImageWithCrossfade(
-                    request = ImageRequest.Builder(ContextAmbient.current)
-                        .data(character.image)
-                        .transformations(CircleCropTransformation())
-                        .build(),
-                    modifier = Modifier.padding(16.dp),
-                    contentScale = ContentScale.FillHeight
-                )
-            }
+            CoilImage(
+                fadeIn = true,
+                request = ImageRequest.Builder(AmbientContext.current)
+                    .data(character.image)
+                    .transformations(CircleCropTransformation())
+                    .build(),
+                modifier = Modifier.padding(16.dp),
+                contentScale = ContentScale.FillHeight,
+                contentDescription = "Character Icon"
+            )
             CardBodyContent(character)
         }
-
     }
 }
 
@@ -79,10 +65,10 @@ private fun CardBodyContent(character: Character) {
             Box(
                 modifier = Modifier
                     .padding(top = 4.dp)
-                    .preferredSize(12.dp),
-                shape = CircleShape,
-                backgroundColor = statusColor(character.status)
-            ) {}
+                    .size(10.dp)
+                    .clip(shape = CircleShape)
+                    .background(statusColor(status = character.status))
+            )
             Text(
                 modifier = Modifier
                     .padding(
@@ -125,7 +111,7 @@ private fun CardBodyContent(character: Character) {
 
 @Composable
 fun statusColor(status: String): Color {
-    return when(status) {
+    return when (status) {
         "Alive" -> Color.Green
         "Dead" -> Color.Red
         else -> Color.Black
@@ -146,36 +132,8 @@ fun DefaultPreview() {
         type = "Human",
         species = "Human",
         url = "",
-        origin = Origin("", ""),
+        origin = Origin("Earth", ""),
         id = 0
     )
-    val morty = Character(
-        created = "",
-        episode = listOf("Morty E1"),
-        gender = "Male",
-        image = "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
-        location = Location("Earth", ""),
-        name = "Morty Smith",
-        status = "Alive",
-        type = "Human",
-        species = "Human",
-        url = "",
-        origin = Origin("", ""),
-        id = 0
-    )
-    val summer = Character(
-        created = "",
-        episode = listOf("Morty E1"),
-        gender = "Female",
-        image = "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
-        location = Location("Earth", ""),
-        name = "Summer Smith",
-        status = "Alive",
-        type = "Human",
-        species = "Human",
-        url = "",
-        origin = Origin("", ""),
-        id = 0
-    )
-    CharactersContent(listOf(rick, morty, summer), InnerPadding(16.dp))
+    CardLayout(rick)
 }

@@ -5,25 +5,23 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.ianarbuckle.rickmortycompose.api.Character
-import com.ianarbuckle.rickmortycompose.ui.characters.composables.CharactersContent
+import com.ianarbuckle.rickmortycompose.ui.characters.view.CardLayout
 import com.ianarbuckle.rickmortycompose.ui.theme.RickyMortyComposeTheme
 import com.ianarbuckle.rickmortycompose.ui.characters.viewmodel.CharactersViewModel
-import com.ianarbuckle.rickmortycompose.utils.UIViewState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,41 +31,52 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-            setContent {
-                RickyMortyComposeTheme {
-                    CataloguesScreen(charactersViewModel)
-                }
+        setContent {
+            RickyMortyComposeTheme {
+                CataloguesScreen(charactersViewModel)
             }
+        }
     }
 }
 
 @Composable
 fun CataloguesScreen(charactersViewModel: CharactersViewModel) {
-    val bottomBarSelectedIndex by remember {
-        mutableStateOf(0)
-    }
-
-    val observeState = charactersViewModel.uiViewStateObservable.observeAsState()
-    val uiState = observeState.value
+    val characters = charactersViewModel.characters.collectAsLazyPagingItems()
 
     Scaffold(
         topBar = {
             TopAppBar(title = { Text(text = "Rick & Morty Catalogue") })
         },
         bodyContent = {
-            when (uiState) {
-                is UIViewState.Success -> {
-                    CharactersContent(uiState.result as List<Character>, it)
+            RowList(characters = characters, innerPadding = it)
+        }
+    )
+}
+
+@Composable
+fun RowList(characters: LazyPagingItems<Character>, innerPadding: PaddingValues) {
+    LazyColumn(contentPadding = innerPadding) {
+
+        items(characters) { character ->
+            character?.let {
+                CardLayout(character = it)
+            }
+        }
+
+        characters.apply {
+            when {
+                loadState.append is LoadState.Error -> {
+                    item { ErrorContent() }
                 }
-                is UIViewState.Error -> {
-                    ErrorContent()
+                loadState.append is LoadState.Loading -> {
+                    item { LoadingContent() }
                 }
-                is UIViewState.Loading -> {
-                    LoadingContent()
+                loadState.refresh is LoadState.Loading -> {
+                    item { LoadingView() }
                 }
             }
         }
-    )
+    }
 }
 
 @Composable
@@ -85,58 +94,43 @@ fun LoadingContent() {
 
 @Composable
 fun ErrorContent() {
-    Row(modifier = Modifier
-        .fillMaxHeight()
-        .fillMaxWidth()
-        .padding(16.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically) {
         Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             Image(
-                    imageResource(id = R.drawable.rick_morty_error),
-                    modifier = Modifier.preferredWidthIn(250.dp, 250.dp),
-                    alignment = Alignment.Center,
-                    contentScale = ContentScale.Fit
+                imageResource(id = R.drawable.rick_morty_error),
+                modifier = Modifier.preferredWidthIn(250.dp, 250.dp),
+                alignment = Alignment.Center,
+                contentScale = ContentScale.Fit,
+                contentDescription = ""
             )
             Text(
-                    text = "Oops! Something went wrong.",
-                    modifier = Modifier.padding(16.dp)
+                text = "Oops! Something went wrong.",
+                modifier = Modifier.padding(16.dp)
             )
             Button(onClick = {
 
             }) {
                 Text(
-                        text = "Try Again"
+                    text = "Try Again"
                 )
             }
         }
-
-    }
 }
 
 @Composable
-fun BottomAppBar(bottomBarSelectedIndex: Int) {
-    var selectedIndex = bottomBarSelectedIndex
-    BottomAppBar(content = {
-        BottomNavigationItem(
-            icon = { Icon(Icons.Default.Person) },
-            label = { Text("Characters") },
-            selected = selectedIndex == 0,
-            onClick = {
-                selectedIndex = 0
-            })
-
-        BottomNavigationItem(
-            icon = { Icon(Icons.Default.LocationOn) },
-            label = { Text("Locations") },
-            selected = selectedIndex == 1,
-            onClick = {
-                selectedIndex = 0
-            })
-
-    })
+fun LoadingView() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CircularProgressIndicator()
+    }
 }
 
 @Preview(showBackground = true)
@@ -149,9 +143,6 @@ fun LoadingPreview() {
             },
             bodyContent = {
                 LoadingContent()
-            },
-            bottomBar = {
-                BottomAppBar(0)
             }
         )
     }
@@ -167,9 +158,21 @@ fun ErrorPreview() {
             },
             bodyContent = {
                 ErrorContent()
+            }
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoadingItemPreview() {
+    RickyMortyComposeTheme {
+        Scaffold(
+            topBar = {
+                TopAppBar(title = { Text(text = "Rick & Morty Catalogue") })
             },
-            bottomBar = {
-                BottomAppBar(0)
+            bodyContent = {
+                LoadingView()
             }
         )
     }

@@ -1,44 +1,23 @@
 package com.ianarbuckle.rickmortycompose.ui.characters.viewmodel
 
-import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.ianarbuckle.rickmortycompose.ui.characters.usecase.CharactersUseCase
-import com.ianarbuckle.rickmortycompose.utils.CoroutineDispatchers
-import com.ianarbuckle.rickmortycompose.utils.Result
-import com.ianarbuckle.rickmortycompose.utils.UIViewState
-import com.ianarbuckle.rickmortycompose.utils.asLiveData
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.ianarbuckle.rickmortycompose.api.Character
+import com.ianarbuckle.rickmortycompose.ui.characters.datasource.CharactersPagingSource
+import com.ianarbuckle.rickmortycompose.ui.characters.repository.CharactersRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
+@HiltViewModel
+class CharactersViewModel @Inject constructor(
+    private val repository: CharactersRepository,
+) : ViewModel() {
 
-class CharactersViewModel @ViewModelInject constructor(private val useCase: CharactersUseCase,
-                                                       private val dispatchers: CoroutineDispatchers) : ViewModel() {
-
-    private val _mutableUIViewState = MutableLiveData<UIViewState<Any>>()
-
-    val uiViewStateObservable = _mutableUIViewState.asLiveData()
-
-    init {
-        emitUIState(UIViewState.Loading)
-
-        viewModelScope.launch(dispatchers.io) {
-            val result = useCase.fetchConferences()
-
-            withContext(dispatchers.main) {
-                if (result is Result.Success) {
-                    emitUIState(UIViewState.Success(result.data))
-                } else {
-                    emitUIState(UIViewState.Error)
-                }
-            }
-        }
-    }
-
-    private fun emitUIState(state: UIViewState<Any>) {
-        _mutableUIViewState.postValue(state)
-    }
+    val characters: Flow<PagingData<Character>> = Pager(PagingConfig(pageSize = 20)) {
+        CharactersPagingSource(repository)
+    }.flow
 
 }

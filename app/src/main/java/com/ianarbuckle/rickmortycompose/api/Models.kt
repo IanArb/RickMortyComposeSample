@@ -14,7 +14,7 @@ data class RickMortyLocations(
 @JsonClass(generateAdapter = true)
 data class Info(
     val count: Int,
-    val next: String,
+    val next: String? = null,
     val pages: Int,
     val prev: String? = null
 )

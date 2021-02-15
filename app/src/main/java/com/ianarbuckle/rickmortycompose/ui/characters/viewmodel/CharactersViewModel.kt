@@ -13,11 +13,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CharactersViewModel @Inject constructor(
-    private val repository: CharactersRepository,
+    private val charactersDataSource: CharactersPagingSource,
 ) : ViewModel() {
 
     val characters: Flow<PagingData<Character>> = Pager(PagingConfig(pageSize = 20)) {
-        CharactersPagingSource(repository)
+        charactersDataSource
     }.flow
 
 }
